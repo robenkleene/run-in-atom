@@ -1,3 +1,4 @@
 ## coffee-eval Package
 
-A short description of your package.
+Eval CoffeeScript from an Atom buffer!
+![https://www.dropbox.com/s/momzfocuaa89d74/repl.gif][https://www.dropbox.com/s/momzfocuaa89d74/repl.gif]
