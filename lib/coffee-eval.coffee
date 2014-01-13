@@ -34,5 +34,5 @@ module.exports =
           activePane.splitDown(@outputEditor)
         @showOutput(output, activePane)
     else
-      @outputEditor.setText(output?.toString())
+      @outputEditor.setText(output?.toString() or "")
       activePane.focus()
