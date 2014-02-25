@@ -5,12 +5,7 @@
   "private": true,
   "description": "Evals CoffeeScript",
   "repository": "https://github.com/atom/coffee-eval",
-  "licenses": [
-    {
-      "type": "Apache",
-      "url": "http://github.com/atom/coffee-eval/raw/master/LICENSE.md"
-    }
-  ],
+  "license": "MIT",
   "engines": {
     "atom": ">0.39.0"
   },
