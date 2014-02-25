@@ -1,4 +1,3 @@
-{_} = require 'atom'
 coffee = require 'coffee-script'
 
 module.exports =
