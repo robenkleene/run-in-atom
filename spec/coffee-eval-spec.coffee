@@ -4,8 +4,12 @@ describe "CoffeeEval", ->
   beforeEach ->
     atom.workspaceView = new WorkspaceView
     atom.workspaceView.attachToDom()
-    atom.packages.activatePackage('language-coffee-script', sync: true)
-    atom.packages.activatePackage('coffee-eval', immediate: true)
+
+    waitsForPromise ->
+      atom.packages.activatePackage('language-coffee-script')
+
+    waitsForPromise ->
+      atom.packages.activatePackage('coffee-eval')
 
   it "evaluates coffeescript and logs the result", ->
     spyOn(console, "log")
