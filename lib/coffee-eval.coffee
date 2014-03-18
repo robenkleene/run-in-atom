@@ -1,4 +1,5 @@
 coffee = require 'coffee-script'
+vm     = require 'vm'
 
 module.exports =
   activate: ->
@@ -14,7 +15,7 @@ module.exports =
 
   evaluateCode: (code) ->
     try
-      output = eval(coffee.compile(code, bare: true))
+      output = vm.runInThisContext(coffee.compile(code, bare: true))
       console.log output
     catch e
       output = "Error:#{e}"
