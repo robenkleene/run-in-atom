@@ -2,6 +2,9 @@ coffee = require 'coffee-script'
 vm     = require 'vm'
 
 module.exports =
+  configDefaults:
+    showOutputPane: true
+
   activate: ->
     atom.workspaceView.on 'coffee-eval:eval', => @coffeeEval()
 
@@ -11,7 +14,8 @@ module.exports =
 
     code = editor.getSelectedText() or editor.getText()
     output = @evaluateCode(code)
-    @showOutput(output)
+    if atom.config.get 'coffee-eval.showOutputPane'
+      @showOutput(output)
 
   evaluateCode: (code) ->
     try
