@@ -20,6 +20,7 @@ describe "CoffeeEval", ->
       editor = atom.workspace.getActivePaneItem()
 
   it "evaluates coffeescript and logs the result", ->
+    atom.config.set('coffee-eval.showOutputPane', false)
     spyOn(console, "log").andCallThrough()
 
     runs ->
@@ -32,7 +33,6 @@ describe "CoffeeEval", ->
 
     beforeEach ->
       coffeeEval = atom.packages.getActivePackage('coffee-eval').mainModule
-      console.log coffeeEval
       spyOn(coffeeEval, 'showOutput').andCallThrough()
 
     it "logs the result if showOutputpane is set to true", ->
