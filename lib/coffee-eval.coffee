@@ -6,7 +6,7 @@ module.exports =
     atom.workspaceView.on 'coffee-eval:eval', => @coffeeEval()
 
   coffeeEval: ->
-    editor = atom.workspaceView.getActivePaneItem()
+    editor = atom.workspace.getActivePaneItem()
     return unless editor.getGrammar()?.scopeName is 'source.coffee'
 
     code = editor.getSelectedText() or editor.getText()
@@ -24,7 +24,7 @@ module.exports =
     output
 
   showOutput: (output, activePane) ->
-    activePane ?= atom.workspaceView.getActivePane()
+    activePane ?= atom.workspaceView.getActivePaneView()
     unless @outputEditor?
       atom.project.open().then (@outputEditor) =>
         @outputEditor.on 'destroyed', => @outputEditor = null
