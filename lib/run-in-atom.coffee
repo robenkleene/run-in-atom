@@ -2,22 +2,16 @@ coffee = require 'coffee-script'
 vm     = require 'vm'
 
 module.exports =
-  configDefaults:
-    showOutputPane: true
-
   activate: ->
-    atom.workspaceView.command 'run-in-atom:eval', => @coffeeEval()
+    atom.workspaceView.command 'run-in-atom:run-in-atom', =>
+      editor = atom.workspace.getActivePaneItem()
+      scope = editor.getGrammar()?.scopeName
+      if scope is 'source.coffee'
+        @runCoffeeScript(@getCodeInEditor(editor))
+      if scope is 'source.javascript'
+        @runJavaScript(@getCodeInEditor(editor))
 
-  coffeeEval: ->
-    editor = atom.workspace.getActivePaneItem()
-    return unless editor.getGrammar()?.scopeName is 'source.coffee'
-
-    code = editor.getSelectedText() or editor.getText()
-    output = @evaluateCode(code)
-    if atom.config.get 'run-in-atom.showOutputPane'
-      @showOutput(output)
-
-  evaluateCode: (code) ->
+  runCoffeeScript: (code) ->
     try
       output = vm.runInThisContext(coffee.compile(code, bare: true))
       console.log output
@@ -25,18 +19,13 @@ module.exports =
       output = "Error:#{e}"
       console.error "Eval Error:", e
 
-    output
+  runJavaScript: (code) ->
+    try
+      console.log code
+      # vm.runInThisContext(coffee.compile(code, bare: true))
+    catch e
+      output = "Error:#{e}"
+      console.error "Eval Error:", e
 
-  showOutput: (output, activePane) ->
-    activePane ?= atom.workspaceView.getActivePaneView()
-    unless @outputEditor?
-      atom.project.open().then (@outputEditor) =>
-        @outputEditor.on 'destroyed', => @outputEditor = null
-        if nextPane = activePane.getNextPane()
-          nextPane.showItem(@outputEditor)
-        else
-          activePane.splitDown(@outputEditor)
-        @showOutput(output, activePane)
-    else
-      @outputEditor.setText(output?.toString() or "")
-      activePane.focus()
+  getCodeInEditor: (editor) ->
+    editor.getSelectedText() or editor.getText()

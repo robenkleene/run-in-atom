@@ -1,2 +1,2 @@
 '.editor':
-  'cmd-k r': 'run-in-atom:eval'
+  'cmd-k r': 'run-in-atom:run-in-atom'

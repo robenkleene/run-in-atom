@@ -1,3 +1,5 @@
 'context-menu':
   '.overlayer .source.coffee':
-    'Evaluate CoffeeScript': 'run-in-atom:eval'
+    'Run in Atom': 'run-in-atom:run-in-atom'
+  '.overlayer .source.javascript':
+    'Run in Atom': 'run-in-atom:run-in-atom'
