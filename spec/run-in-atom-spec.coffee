@@ -54,24 +54,48 @@ describe "Run in Atom", ->
         expect(RunInAtom.matchingCursorScopeInEditor(editor)).toBe 'source.js'
 
     describe "for a Markdown file", ->
-      waitsForPromise ->
-        atom.packages.activatePackage('language-gfm')
 
-      runs ->
-        console.log "got here"
+      beforeEach ->
+        waitsForPromise ->
+          atom.packages.activatePackage('language-gfm')
 
+        waitsForPromise ->
+          atom.workspace.open("code.md")
+
+        runs ->
+          editor = atom.workspace.getActivePaneItem()
 
       describe "when the cursor is not in a code block", ->
+
+        beforeEach ->
+          editor.setCursorScreenPosition([0, 0])
+
         it "scopeInEditor returns 'source.gfm'", ->
+          expect(RunInAtom.scopeInEditor(editor)).toBe 'source.gfm'
+
         it "matchingCursorScopeInEditor returns 'source.gfm'", ->
+          expect(RunInAtom.matchingCursorScopeInEditor(editor)).toBe undefined
 
       describe "when the cursor is in a CoffeeScript code block", ->
+
+        beforeEach ->
+          editor.setCursorScreenPosition([1, 0])
+
         it "scopeInEditor returns 'source.gfm'", ->
+          expect(RunInAtom.scopeInEditor(editor)).toBe 'source.gfm'
+
         it "matchingCursorScopeInEditor returns 'source.coffee'", ->
+          expect(RunInAtom.matchingCursorScopeInEditor(editor)).toBe 'source.coffee'
 
       describe "when the cursor is in a JavaScript code block", ->
+        beforeEach ->
+          editor.setCursorScreenPosition([5, 0])
+
         it "scopeInEditor returns 'source.gfm'", ->
+          expect(RunInAtom.scopeInEditor(editor)).toBe 'source.gfm'
+
         it "matchingCursorScopeInEditor returns 'source.js'", ->
+          expect(RunInAtom.matchingCursorScopeInEditor(editor)).toBe 'source.js'
 
   describe "runCoffeeScript", ->
 
