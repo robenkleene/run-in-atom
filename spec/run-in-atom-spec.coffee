@@ -1,5 +1,8 @@
 {WorkspaceView} = require 'atom'
 RunInAtom = require '../lib/run-in-atom'
+coffee = require 'coffee-script'
+vm = require 'vm'
+
 
 describe "Run in Atom", ->
   editor = null
@@ -11,15 +14,13 @@ describe "Run in Atom", ->
     waitsForPromise ->
       atom.packages.activatePackage('run-in-atom')
 
+    waitsForPromise ->
+      atom.packages.activatePackage('language-coffee-script')
+
+    waitsForPromise ->
+      atom.packages.activatePackage('language-javascript')
+
   describe "Editor scope functions", ->
-
-    beforeEach ->
-
-      waitsForPromise ->
-        atom.packages.activatePackage('language-coffee-script')
-
-      waitsForPromise ->
-        atom.packages.activatePackage('language-javascript')
 
     describe "for a CoffeeScript file", ->
 
@@ -97,23 +98,26 @@ describe "Run in Atom", ->
         it "matchingCursorScopeInEditor returns 'source.js'", ->
           expect(RunInAtom.matchingCursorScopeInEditor(editor)).toBe 'source.js'
 
-  describe "runCoffeeScript", ->
+  describe "running code", ->
 
-    beforeEach ->
+    coffeeScriptCode = "atom.getVersion() is 1"
+    javaScriptCode = "atom.getVersion() === 1"
 
-      waitsForPromise ->
-        atom.packages.activatePackage('language-coffee-script')
+    describe "CoffeeScript", ->
 
-      waitsForPromise ->
-        atom.workspace.open("empty.coffee")
+      beforeEach ->
 
-      runs ->
-        editor = atom.workspace.getActivePaneItem()
+        waitsForPromise ->
+          atom.workspace.open("empty.coffee")
 
-    it "evaluates coffeescript and logs the result", ->
-      spyOn(console, "log").andCallThrough()
+        runs ->
+          editor = atom.workspace.getActivePaneItem()
 
-      runs ->
-        editor.setText("atom.getVersion()")
-        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
-        expect(console.log).toHaveBeenCalledWith(atom.getVersion())
+      it "evaluates coffeescript and logs the result", ->
+        spyOn(console, "log").andCallThrough()
+
+        runs ->
+          editor.setText("atom.getVersion()")
+          atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+          result = vm.runInThisContext(coffee.compile(code, bare: true))
+          expect(console.log).toHaveBeenCalledWith(atom.getVersion())

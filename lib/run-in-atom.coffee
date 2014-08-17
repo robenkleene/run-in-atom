@@ -1,5 +1,5 @@
 coffee = require 'coffee-script'
-vm     = require 'vm'
+vm = require 'vm'
 
 module.exports =
   activate: ->
@@ -11,15 +11,21 @@ module.exports =
       else
         code = editor.getText()
         scope = @scopeInEditor(editor)
-      @runCodeInScope(code, scope)
+      @runCodeInScope code, scope, (error, result) ->
+        if error
+          console.error "Run in Atom Error:", error
+        else
+          # console.log "Run in Atom:", result
+          console.log result
 
-  runCodeInScope: (code, scope) ->
+  runCodeInScope: (code, scope, callback) ->
     switch scope
       when 'source.coffee'
         try
-          console.log vm.runInThisContext(coffee.compile(code, bare: true))
-        catch e
-          console.error "Run in Atom Error:", e
+          result = vm.runInThisContext(coffee.compile(code, bare: true))
+          callback(null, result)
+        catch error
+          callback(error)
       when 'source.js'
         console.log code
 
