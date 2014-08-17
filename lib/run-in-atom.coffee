@@ -6,7 +6,7 @@ module.exports =
     showOutputPane: true
 
   activate: ->
-    atom.workspaceView.command 'coffee-eval:eval', => @coffeeEval()
+    atom.workspaceView.command 'run-in-atom:eval', => @coffeeEval()
 
   coffeeEval: ->
     editor = atom.workspace.getActivePaneItem()
@@ -14,7 +14,7 @@ module.exports =
 
     code = editor.getSelectedText() or editor.getText()
     output = @evaluateCode(code)
-    if atom.config.get 'coffee-eval.showOutputPane'
+    if atom.config.get 'run-in-atom.showOutputPane'
       @showOutput(output)
 
   evaluateCode: (code) ->

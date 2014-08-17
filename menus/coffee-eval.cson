@@ -1,3 +1,0 @@
-'context-menu':
-  '.overlayer .source.coffee':
-    'Evaluate CoffeeScript': 'coffee-eval:eval'
