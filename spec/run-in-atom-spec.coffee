@@ -10,28 +10,39 @@ describe "Run in Atom", ->
     waitsForPromise ->
       atom.packages.activatePackage('run-in-atom')
 
-  describe "isEditorScope", ->
+  describe "Editor scope functions", ->
 
     beforeEach ->
 
       waitsForPromise ->
         atom.packages.activatePackage('language-coffee-script')
 
+      waitsForPromise ->
+        atom.packages.activatePackage('language-javascript')
+
       describe "for a CoffeeScript file", ->
-        it "isEditorScopeCoffeeScript returns true", ->
-        it "isEditorScopeJavaScript returns false", ->
+        it "scopeInEditor returns 'source.coffee'", ->
+        it "matchingCursorScopeInEditor returns 'source.coffee'", ->
 
       describe "for a JavaScript file", ->
-        it "isEditorScopeCoffeeScript returns false", ->
-        it "isEditorScopeJavaScript returns true", ->
+        it "scopeInEditor returns 'source.js'", ->
+        it "matchingCursorScopeInEditor returns 'source.js'", ->
 
-      # describe "for a Markdown file", ->
-      #
-      #   describe "isEditorScopeCoffeeScript", ->
-      #
-      #
-      #   it "it returns false outside of CoffeeScript code blocks", ->
-      #   it "it returns true inside a CoffeeScript code block", ->
+      describe "for a Markdown file", ->
+        waitsForPromise ->
+          atom.packages.activatePackage('language-gfm')
+
+        describe "when the cursor is not in a code block", ->
+          it "scopeInEditor returns 'source.gfm'", ->
+          it "matchingCursorScopeInEditor returns 'source.gfm'", ->
+
+        describe "when the cursor is in a CoffeeScript code block", ->
+          it "scopeInEditor returns 'source.gfm'", ->
+          it "matchingCursorScopeInEditor returns 'source.coffee'", ->
+
+        describe "when the cursor is in a JavaScript code block", ->
+          it "scopeInEditor returns 'source.gfm'", ->
+          it "matchingCursorScopeInEditor returns 'source.js'", ->
 
   describe "runCoffeeScript", ->
 
