@@ -13,11 +13,9 @@ module.exports =
 
   runCoffeeScript: (code) ->
     try
-      output = vm.runInThisContext(coffee.compile(code, bare: true))
-      console.log output
+      console.log vm.runInThisContext(coffee.compile(code, bare: true))
     catch e
-      output = "Error:#{e}"
-      console.error "Eval Error:", e
+      console.error "Run in Atom Error:", e
 
   runJavaScript: (code) ->
     try
