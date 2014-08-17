@@ -5,10 +5,9 @@ module.exports =
   activate: ->
     atom.workspaceView.command 'run-in-atom:run-in-atom', =>
       editor = atom.workspace.getActivePaneItem()
-      scope = editor.getGrammar()?.scopeName
-      if scope is 'source.coffee'
+      if @isEditorScopeCoffeeScript(editor)
         @runCoffeeScript(@getCodeInEditor(editor))
-      if scope is 'source.javascript'
+      if @isEditorScopeJavaScript(editor)
         @runJavaScript(@getCodeInEditor(editor))
 
   runCoffeeScript: (code) ->
@@ -27,3 +26,14 @@ module.exports =
 
   getCodeInEditor: (editor) ->
     editor.getSelectedText() or editor.getText()
+
+  isEditorScopeCoffeeScript: (editor) ->
+    @isEditorScope(editor, 'source.coffee')
+
+  isEditorScopeJavaScript: (editor) ->
+    @isEditorScope(editor, 'source.js')
+
+  isEditorScope: (editor, scope) ->
+    return true if scope is editor.getGrammar()?.scopeName
+    return true if scope in editor.getCursorScopes()
+    false

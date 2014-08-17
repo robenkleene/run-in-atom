@@ -7,14 +7,38 @@ describe "Run in Atom", ->
     atom.workspaceView = new WorkspaceView
     atom.workspaceView.attachToDom()
 
-  describe "runCoffeeScript", ->
+    waitsForPromise ->
+      atom.packages.activatePackage('run-in-atom')
+
+  describe "isEditorScope", ->
 
     beforeEach ->
+
       waitsForPromise ->
         atom.packages.activatePackage('language-coffee-script')
 
+      describe "for a CoffeeScript file", ->
+        it "isEditorScopeCoffeeScript returns true", ->
+        it "isEditorScopeJavaScript returns false", ->
+
+      describe "for a JavaScript file", ->
+        it "isEditorScopeCoffeeScript returns false", ->
+        it "isEditorScopeJavaScript returns true", ->
+
+      # describe "for a Markdown file", ->
+      #
+      #   describe "isEditorScopeCoffeeScript", ->
+      #
+      #
+      #   it "it returns false outside of CoffeeScript code blocks", ->
+      #   it "it returns true inside a CoffeeScript code block", ->
+
+  describe "runCoffeeScript", ->
+
+    beforeEach ->
+
       waitsForPromise ->
-        atom.packages.activatePackage('run-in-atom')
+        atom.packages.activatePackage('language-coffee-script')
 
       waitsForPromise ->
         atom.workspace.open("empty.coffee")
