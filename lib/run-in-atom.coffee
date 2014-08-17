@@ -24,7 +24,7 @@ module.exports =
         console.log code
 
   matchingCursorScopeInEditor: (editor) ->
-    scopes = getScopes()
+    scopes = @getScopes()
     for scope in scopes
       return scope if scope in editor.getCursorScopes()
 
