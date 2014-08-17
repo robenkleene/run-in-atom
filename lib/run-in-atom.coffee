@@ -5,35 +5,31 @@ module.exports =
   activate: ->
     atom.workspaceView.command 'run-in-atom:run-in-atom', =>
       editor = atom.workspace.getActivePaneItem()
-      if @isEditorScopeCoffeeScript(editor)
-        @runCoffeeScript(@getCodeInEditor(editor))
-      if @isEditorScopeJavaScript(editor)
-        @runJavaScript(@getCodeInEditor(editor))
+      code = editor.getSelectedText()
+      if code
+        scope = matchingCursorScopeInEditor(editor)
+      else
+        code = editor.getText()
+        scope = @scopeInEditor(editor)
+      @runCodeInScope(code, scope)
 
-  runCoffeeScript: (code) ->
-    try
-      console.log vm.runInThisContext(coffee.compile(code, bare: true))
-    catch e
-      console.error "Run in Atom Error:", e
+  runCodeInScope: (code, scope) ->
+    switch scope
+      when 'source.coffee'
+        try
+          console.log vm.runInThisContext(coffee.compile(code, bare: true))
+        catch e
+          console.error "Run in Atom Error:", e
+      when 'source.js'
+        console.log code
 
-  runJavaScript: (code) ->
-    try
-      console.log code
-      # vm.runInThisContext(coffee.compile(code, bare: true))
-    catch e
-      output = "Error:#{e}"
-      console.error "Eval Error:", e
+  matchingCursorScopeInEditor: (editor) ->
+    scopes = getScopes()
+    for scope in scopes
+      return scope if scope in editor.getCursorScopes()
 
-  getCodeInEditor: (editor) ->
-    editor.getSelectedText() or editor.getText()
+  getScopes: ->
+    ['source.coffee', 'source.js']
 
-  isEditorScopeCoffeeScript: (editor) ->
-    @isEditorScope(editor, 'source.coffee')
-
-  isEditorScopeJavaScript: (editor) ->
-    @isEditorScope(editor, 'source.js')
-
-  isEditorScope: (editor, scope) ->
-    return true if scope is editor.getGrammar()?.scopeName
-    return true if scope in editor.getCursorScopes()
-    false
+  scopeInEditor: (editor) ->
+    editor.getGrammar()?.scopeName
