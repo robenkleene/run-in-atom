@@ -3,6 +3,9 @@ RunInAtom = require '../lib/run-in-atom'
 
 describe "Run in Atom", ->
   editor = null
+  markdownCursorPositionNoCode = [0, 0]
+  markdownCursorPositionCoffeeScript = [1, 0]
+  markdownCursorPositionJavaScript = [6, 0]
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
@@ -66,7 +69,7 @@ describe "Run in Atom", ->
       describe "when the cursor is not in a code block", ->
 
         beforeEach ->
-          editor.setCursorScreenPosition([0, 0])
+          editor.setCursorScreenPosition(markdownCursorPositionNoCode)
 
         it "scopeInEditor returns 'source.gfm'", ->
           expect(RunInAtom.scopeInEditor(editor)).toBe 'source.gfm'
@@ -77,7 +80,7 @@ describe "Run in Atom", ->
       describe "when the cursor is in a CoffeeScript code block", ->
 
         beforeEach ->
-          editor.setCursorScreenPosition([1, 0])
+          editor.setCursorScreenPosition(markdownCursorPositionCoffeeScript)
 
         it "scopeInEditor returns 'source.gfm'", ->
           expect(RunInAtom.scopeInEditor(editor)).toBe 'source.gfm'
@@ -87,7 +90,7 @@ describe "Run in Atom", ->
 
       describe "when the cursor is in a JavaScript code block", ->
         beforeEach ->
-          editor.setCursorScreenPosition([5, 0])
+          editor.setCursorScreenPosition(markdownCursorPositionJavaScript)
 
         it "scopeInEditor returns 'source.gfm'", ->
           expect(RunInAtom.scopeInEditor(editor)).toBe 'source.gfm'
@@ -105,7 +108,7 @@ describe "Run in Atom", ->
     beforeEach ->
       spyOn(console, "error")
       spyOn(console, "log")
-      spyOn(console, "warn").andCallThrough()
+      spyOn(console, "warn")
 
     describe "CoffeeScript file", ->
 
@@ -117,7 +120,7 @@ describe "Run in Atom", ->
         runs ->
           editor = atom.workspace.getActivePaneItem()
 
-      it "logs an error if code is invalid", ->
+      it "logs an error if CoffeeScript is invalid", ->
         editor.setText(javaScriptCode)
         atom.workspaceView.trigger 'run-in-atom:run-in-atom'
         expect(console.log).not.toHaveBeenCalled
@@ -141,7 +144,7 @@ describe "Run in Atom", ->
         runs ->
           editor = atom.workspace.getActivePaneItem()
 
-        it "logs an error if code is invalid", ->
+        it "logs an error if JavaScript is invalid", ->
           editor.setText(coffeeScriptCode)
           atom.workspaceView.trigger 'run-in-atom:run-in-atom'
           expect(console.log).not.toHaveBeenCalled
@@ -167,12 +170,33 @@ describe "Run in Atom", ->
         runs ->
           editor = atom.workspace.getActivePaneItem()
 
-      it "Logs a warning if CoffeeScript isn't selected", ->
+      it "Logs a warning if nothing is selected", ->
+        editor.setCursorScreenPosition(markdownCursorPositionNoCode)
         atom.workspaceView.trigger 'run-in-atom:run-in-atom'
         expect(console.log).not.toHaveBeenCalled
         expect(console.error).not.toHaveBeenCalled
         expect(console.warn).toHaveBeenCalled
 
       it "Logs a warning if Markdown is selected", ->
+        editor.setCursorScreenPosition(markdownCursorPositionNoCode)
+        editor.selectLine()
+        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        expect(console.log).not.toHaveBeenCalled
+        expect(console.error).not.toHaveBeenCalled
+        expect(console.warn).toHaveBeenCalled
+
       it "Runs if CoffeeScript is selected", ->
+        editor.setCursorScreenPosition(markdownCursorPositionCoffeeScript)
+        editor.selectLine()
+        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        expect(console.log).toHaveBeenCalledWith(prefix, result)
+        expect(console.error).not.toHaveBeenCalled
+        expect(console.warn).not.toHaveBeenCalled
+
       it "Runs if JavaScript is selected", ->
+        editor.setCursorScreenPosition(markdownCursorPositionJavaScript)
+        editor.selectLine()
+        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        expect(console.log).toHaveBeenCalledWith(prefix, result)
+        expect(console.error).not.toHaveBeenCalled
+        expect(console.warn).not.toHaveBeenCalled
