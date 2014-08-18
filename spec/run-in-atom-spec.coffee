@@ -10,6 +10,7 @@ describe "Run in Atom", ->
   beforeEach ->
     atom.workspaceView = new WorkspaceView
     atom.workspaceView.attachToDom()
+    atom.config.set('run-in-atom.openDeveloperToolsOnRun', false)
 
     waitsForPromise ->
       atom.packages.activatePackage('run-in-atom')
@@ -119,6 +120,22 @@ describe "Run in Atom", ->
 
         runs ->
           editor = atom.workspace.getActivePaneItem()
+
+      describe "openDeveloperToolsOnRun config option", ->
+        beforeEach ->
+          spyOn(atom, "openDevTools")
+
+        it "opens the developer tools if true", ->
+          atom.config.set('run-in-atom.openDeveloperToolsOnRun', true)
+          editor.setText(coffeeScriptCode)
+          atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+          expect(atom.openDevTools).toHaveBeenCalled
+
+        it "doesn't open the developer tools if false", ->
+          atom.config.set('run-in-atom.openDeveloperToolsOnRun', false)
+          editor.setText(coffeeScriptCode)
+          atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+          expect(atom.openDevTools).not.toHaveBeenCalled
 
       it "logs an error if CoffeeScript is invalid", ->
         editor.setText(javaScriptCode)

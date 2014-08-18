@@ -2,8 +2,13 @@ coffee = require 'coffee-script'
 vm = require 'vm'
 
 module.exports =
+  configDefaults:
+    openDeveloperToolsOnRun: true
+
   activate: ->
     atom.workspaceView.command 'run-in-atom:run-in-atom', =>
+      if atom.config.get 'run-in-atom.openDeveloperToolsOnRun'
+        atom.openDevTools()
       editor = atom.workspace.getActivePaneItem()
       code = editor.getSelectedText()
       if code
@@ -29,7 +34,6 @@ module.exports =
           callback(error)
       when 'source.js'
         try
-          console.log code
           result = vm.runInThisContext(code)
           callback(null, null, result)
         catch error
