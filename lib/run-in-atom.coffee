@@ -35,7 +35,7 @@ module.exports =
         catch error
           callback(error)
       else
-        warning = "Attempted to run in #{scope} scope, which isn't supported."
+        warning = "Attempted to run in scope '#{scope}', which isn't supported."
         callback(null, warning)
 
   matchingCursorScopeInEditor: (editor) ->

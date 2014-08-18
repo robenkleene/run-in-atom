@@ -105,6 +105,7 @@ describe "Run in Atom", ->
     beforeEach ->
       spyOn(console, "error")
       spyOn(console, "log")
+      spyOn(console, "warn").andCallThrough()
 
     describe "CoffeeScript file", ->
 
@@ -119,12 +120,16 @@ describe "Run in Atom", ->
       it "logs an error if code is invalid", ->
         editor.setText(javaScriptCode)
         atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        expect(console.log).not.toHaveBeenCalled
         expect(console.error).toHaveBeenCalled
+        expect(console.warn).not.toHaveBeenCalled
 
       it "runs CoffeeScript and logs the result", ->
         editor.setText(coffeeScriptCode)
         atom.workspaceView.trigger 'run-in-atom:run-in-atom'
         expect(console.log).toHaveBeenCalledWith(prefix, result)
+        expect(console.error).not.toHaveBeenCalled
+        expect(console.warn).not.toHaveBeenCalled
 
     describe "JavaScript file", ->
 
@@ -139,15 +144,22 @@ describe "Run in Atom", ->
         it "logs an error if code is invalid", ->
           editor.setText(coffeeScriptCode)
           atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+          expect(console.log).not.toHaveBeenCalled
           expect(console.error).toHaveBeenCalled
+          expect(console.warn).not.toHaveBeenCalled
 
         it "runs JavaScript and logs the result", ->
           editor.setText(javaScriptCode)
           atom.workspaceView.trigger 'run-in-atom:run-in-atom'
           expect(console.log).toHaveBeenCalledWith(prefix, result)
+          expect(console.error).not.toHaveBeenCalled
+          expect(console.warn).not.toHaveBeenCalled
 
     describe "Markdown file", ->
       beforeEach ->
+
+        waitsForPromise ->
+          atom.packages.activatePackage('language-gfm')
 
         waitsForPromise ->
           atom.workspace.open("code.md")
@@ -156,4 +168,11 @@ describe "Run in Atom", ->
           editor = atom.workspace.getActivePaneItem()
 
       it "Logs a warning if CoffeeScript isn't selected", ->
+        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        expect(console.log).not.toHaveBeenCalled
+        expect(console.error).not.toHaveBeenCalled
+        expect(console.warn).toHaveBeenCalled
+
+      it "Logs a warning if Markdown is selected", ->
       it "Runs if CoffeeScript is selected", ->
+      it "Runs if JavaScript is selected", ->
