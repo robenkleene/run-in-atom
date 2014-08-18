@@ -7,27 +7,36 @@ module.exports =
       editor = atom.workspace.getActivePaneItem()
       code = editor.getSelectedText()
       if code
-        scope = matchingCursorScopeInEditor(editor)
+        scope = @matchingCursorScopeInEditor(editor)
       else
         code = editor.getText()
         scope = @scopeInEditor(editor)
-      @runCodeInScope code, scope, (error, result) ->
+      @runCodeInScope code, scope, (error, warning, result) ->
         if error
           console.error "Run in Atom Error:", error
+        else if warning
+          console.warn "Run in Atom Warning:", warning
         else
-          # console.log "Run in Atom:", result
-          console.log result
+          console.log "Run in Atom:", result
 
   runCodeInScope: (code, scope, callback) ->
     switch scope
       when 'source.coffee'
         try
           result = vm.runInThisContext(coffee.compile(code, bare: true))
-          callback(null, result)
+          callback(null, null, result)
         catch error
           callback(error)
       when 'source.js'
-        console.log code
+        try
+          console.log code
+          result = vm.runInThisContext(code)
+          callback(null, null, result)
+        catch error
+          callback(error)
+      else
+        warning = "Attempted to run in #{scope} scope, which isn't supported."
+        callback(null, warning)
 
   matchingCursorScopeInEditor: (editor) ->
     scopes = @getScopes()

@@ -1,7 +1,7 @@
 ``` coffeescript
-atom.getVersion()
+atom.getVersion() is undefined
 ```
 
 ``` javascript
-atom.getVersion()
+atom.getVersion() === undefined
 ```

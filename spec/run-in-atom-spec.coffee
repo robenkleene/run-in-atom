@@ -1,8 +1,5 @@
 {WorkspaceView} = require 'atom'
 RunInAtom = require '../lib/run-in-atom'
-coffee = require 'coffee-script'
-vm = require 'vm'
-
 
 describe "Run in Atom", ->
   editor = null
@@ -100,10 +97,16 @@ describe "Run in Atom", ->
 
   describe "running code", ->
 
-    coffeeScriptCode = "atom.getVersion() is 1"
-    javaScriptCode = "atom.getVersion() === 1"
+    coffeeScriptCode = "atom.getVersion() is undefined"
+    javaScriptCode = "atom.getVersion() === undefined"
+    prefix = "Run in Atom:"
+    result = false
 
-    describe "CoffeeScript", ->
+    beforeEach ->
+      spyOn(console, "error")
+      spyOn(console, "log")
+
+    describe "CoffeeScript file", ->
 
       beforeEach ->
 
@@ -113,11 +116,44 @@ describe "Run in Atom", ->
         runs ->
           editor = atom.workspace.getActivePaneItem()
 
-      it "evaluates coffeescript and logs the result", ->
-        spyOn(console, "log").andCallThrough()
+      it "logs an error if code is invalid", ->
+        editor.setText(javaScriptCode)
+        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        expect(console.error).toHaveBeenCalled
+
+      it "runs CoffeeScript and logs the result", ->
+        editor.setText(coffeeScriptCode)
+        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        expect(console.log).toHaveBeenCalledWith(prefix, result)
+
+    describe "JavaScript file", ->
+
+      beforeEach ->
+
+        waitsForPromise ->
+          atom.workspace.open("empty.coffee")
 
         runs ->
-          editor.setText("atom.getVersion()")
+          editor = atom.workspace.getActivePaneItem()
+
+        it "logs an error if code is invalid", ->
+          editor.setText(coffeeScriptCode)
           atom.workspaceView.trigger 'run-in-atom:run-in-atom'
-          result = vm.runInThisContext(coffee.compile(code, bare: true))
-          expect(console.log).toHaveBeenCalledWith(atom.getVersion())
+          expect(console.error).toHaveBeenCalled
+
+        it "runs JavaScript and logs the result", ->
+          editor.setText(javaScriptCode)
+          atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+          expect(console.log).toHaveBeenCalledWith(prefix, result)
+
+    describe "Markdown file", ->
+      beforeEach ->
+
+        waitsForPromise ->
+          atom.workspace.open("code.md")
+
+        runs ->
+          editor = atom.workspace.getActivePaneItem()
+
+      it "Logs a warning if CoffeeScript isn't selected", ->
+      it "Runs if CoffeeScript is selected", ->
