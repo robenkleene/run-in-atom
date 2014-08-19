@@ -35,4 +35,4 @@ This package is based on code from [probablycorey](https://atom.io/users/probabl
 * Coffee Eval's output window has been removed.
 * There's a configuration option to automatically open the developer tools when code is run.
 * Code can by run from the contextual menu.
-* In [atom/language-gfm](https://github.com/atom/language-gfm), code can be run in fenced code blocks.
+* In [GitHub Flavored Markdown](https://github.com/atom/language-gfm), code can be run in fenced code blocks.
