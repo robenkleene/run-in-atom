@@ -9,7 +9,7 @@ editor = atom.workspace.activePaneItem
 editor.getText()
 ```
 
-![Contextual Menu](docs/contextual-menu.gif)
+![Contextual Menu](https://raw.githubusercontent.com/robenkleene/run-in-atom/master/docs/contextual-menu.gif)
 
 Calling "Run In Atom" with asyncornous CoffeeScript with visible UI changes:
 
@@ -19,7 +19,7 @@ atom.project.open().then (editor) ->
   activePane.splitDown(editor)
 ```
 
-![Command Palette](docs/command-palette.gif)
+![Command Palette](https://raw.githubusercontent.com/robenkleene/run-in-atom/master/docs/command-palette.gif)
 
 ## Documentation
 
