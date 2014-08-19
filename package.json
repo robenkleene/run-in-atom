@@ -1,7 +1,7 @@
 {
   "name": "run-in-atom",
   "main": "./lib/run-in-atom",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Runs CoffeeScript or JavaScript in Atom",
   "repository": "https://github.com/robenkleene/run-in-atom",
   "license": "MIT",
