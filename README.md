@@ -1,6 +1,6 @@
 # Run in Atom package [![Build Status](https://travis-ci.org/robenkleene/run-in-atom.svg?branch=master)](https://travis-ci.org/robenkleene/run-in-atom)
 
-Run in Atom is an Atom package that allows code to be executed in the context of Atom itself. This means the code can examine and manipulate Atom's state while it's running.
+Run in Atom is an Atom package that allows code to be executed in the context of Atom itself. This means code can examine and manipulate Atom's state while it's running.
 
 For example, running the following CoffeeScript with Run in Atom will log the contents of the current document to the console.
 
@@ -11,7 +11,7 @@ editor.getText()
 
 ![Contextual Menu](https://raw.githubusercontent.com/robenkleene/run-in-atom/master/docs/contextual-menu.gif)
 
-Calling "Run In Atom" with asyncornous CoffeeScript with visible UI changes:
+Example of calling asynchronous CoffeeScript with "Run In Atom" that triggers a visible UI change:
 
 ``` coffeescript
 activePane = atom.workspaceView.getActivePaneView()
