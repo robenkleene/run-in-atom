@@ -13,9 +13,6 @@ describe "Run in Atom", ->
     atom.config.set('run-in-atom.openDeveloperToolsOnRun', false)
 
     waitsForPromise ->
-      atom.packages.activatePackage('run-in-atom')
-
-    waitsForPromise ->
       atom.packages.activatePackage('language-coffee-script')
 
     waitsForPromise ->
@@ -100,6 +97,7 @@ describe "Run in Atom", ->
           expect(RunInAtom.matchingCursorScopeInEditor(editor)).toBe 'source.js'
 
   describe "running code", ->
+    activationPromise = null
 
     coffeeScriptCode = "atom.getVersion() is undefined"
     javaScriptCode = "atom.getVersion() === undefined"
@@ -107,6 +105,7 @@ describe "Run in Atom", ->
     result = false
 
     beforeEach ->
+      activationPromise = atom.packages.activatePackage('run-in-atom')
       spyOn(console, "error")
       spyOn(console, "log")
       spyOn(console, "warn")
@@ -129,27 +128,46 @@ describe "Run in Atom", ->
           atom.config.set('run-in-atom.openDeveloperToolsOnRun', true)
           editor.setText(coffeeScriptCode)
           atom.workspaceView.trigger 'run-in-atom:run-in-atom'
-          expect(atom.openDevTools).toHaveBeenCalled
+
+          waitsForPromise ->
+            activationPromise
+
+          runs ->
+            expect(atom.openDevTools).toHaveBeenCalled
 
         it "doesn't open the developer tools if false", ->
           atom.config.set('run-in-atom.openDeveloperToolsOnRun', false)
           editor.setText(coffeeScriptCode)
           atom.workspaceView.trigger 'run-in-atom:run-in-atom'
-          expect(atom.openDevTools).not.toHaveBeenCalled
+
+          waitsForPromise ->
+            activationPromise
+
+          runs ->
+            expect(atom.openDevTools).not.toHaveBeenCalled
 
       it "logs an error if CoffeeScript is invalid", ->
         editor.setText(javaScriptCode)
         atom.workspaceView.trigger 'run-in-atom:run-in-atom'
-        expect(console.log).not.toHaveBeenCalled
-        expect(console.error).toHaveBeenCalled
-        expect(console.warn).not.toHaveBeenCalled
+        waitsForPromise ->
+          activationPromise
+
+        runs ->
+          expect(console.log).not.toHaveBeenCalled
+          expect(console.error).toHaveBeenCalled
+          expect(console.warn).not.toHaveBeenCalled
 
       it "runs CoffeeScript and logs the result", ->
         editor.setText(coffeeScriptCode)
         atom.workspaceView.trigger 'run-in-atom:run-in-atom'
-        expect(console.log).toHaveBeenCalledWith(prefix, result)
-        expect(console.error).not.toHaveBeenCalled
-        expect(console.warn).not.toHaveBeenCalled
+
+        waitsForPromise ->
+          activationPromise
+
+        runs ->
+          expect(console.log).toHaveBeenCalledWith(prefix, result)
+          expect(console.error).not.toHaveBeenCalled
+          expect(console.warn).not.toHaveBeenCalled
 
     describe "JavaScript file", ->
 
@@ -164,16 +182,26 @@ describe "Run in Atom", ->
         it "logs an error if JavaScript is invalid", ->
           editor.setText(coffeeScriptCode)
           atom.workspaceView.trigger 'run-in-atom:run-in-atom'
-          expect(console.log).not.toHaveBeenCalled
-          expect(console.error).toHaveBeenCalled
-          expect(console.warn).not.toHaveBeenCalled
+
+          waitsForPromise ->
+            activationPromise
+
+          runs ->
+            expect(console.log).not.toHaveBeenCalled
+            expect(console.error).toHaveBeenCalled
+            expect(console.warn).not.toHaveBeenCalled
 
         it "runs JavaScript and logs the result", ->
           editor.setText(javaScriptCode)
           atom.workspaceView.trigger 'run-in-atom:run-in-atom'
-          expect(console.log).toHaveBeenCalledWith(prefix, result)
-          expect(console.error).not.toHaveBeenCalled
-          expect(console.warn).not.toHaveBeenCalled
+
+          waitsForPromise ->
+            activationPromise
+
+          runs ->
+            expect(console.log).toHaveBeenCalledWith(prefix, result)
+            expect(console.error).not.toHaveBeenCalled
+            expect(console.warn).not.toHaveBeenCalled
 
     describe "Markdown file", ->
       beforeEach ->
@@ -190,30 +218,50 @@ describe "Run in Atom", ->
       it "Logs a warning if nothing is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionNoCode)
         atom.workspaceView.trigger 'run-in-atom:run-in-atom'
-        expect(console.log).not.toHaveBeenCalled
-        expect(console.error).not.toHaveBeenCalled
-        expect(console.warn).toHaveBeenCalled
+
+        waitsForPromise ->
+          activationPromise
+
+        runs ->
+          expect(console.log).not.toHaveBeenCalled
+          expect(console.error).not.toHaveBeenCalled
+          expect(console.warn).toHaveBeenCalled
 
       it "Logs a warning if Markdown is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionNoCode)
         editor.selectLine()
         atom.workspaceView.trigger 'run-in-atom:run-in-atom'
-        expect(console.log).not.toHaveBeenCalled
-        expect(console.error).not.toHaveBeenCalled
-        expect(console.warn).toHaveBeenCalled
+
+        waitsForPromise ->
+          activationPromise
+
+        runs ->
+          expect(console.log).not.toHaveBeenCalled
+          expect(console.error).not.toHaveBeenCalled
+          expect(console.warn).toHaveBeenCalled
 
       it "Runs if CoffeeScript is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionCoffeeScript)
         editor.selectLine()
         atom.workspaceView.trigger 'run-in-atom:run-in-atom'
-        expect(console.log).toHaveBeenCalledWith(prefix, result)
-        expect(console.error).not.toHaveBeenCalled
-        expect(console.warn).not.toHaveBeenCalled
+
+        waitsForPromise ->
+          activationPromise
+
+        runs ->
+          expect(console.log).toHaveBeenCalledWith(prefix, result)
+          expect(console.error).not.toHaveBeenCalled
+          expect(console.warn).not.toHaveBeenCalled
 
       it "Runs if JavaScript is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionJavaScript)
         editor.selectLine()
         atom.workspaceView.trigger 'run-in-atom:run-in-atom'
-        expect(console.log).toHaveBeenCalledWith(prefix, result)
-        expect(console.error).not.toHaveBeenCalled
-        expect(console.warn).not.toHaveBeenCalled
+
+        waitsForPromise ->
+          activationPromise
+
+        runs ->
+          expect(console.log).toHaveBeenCalledWith(prefix, result)
+          expect(console.error).not.toHaveBeenCalled
+          expect(console.warn).not.toHaveBeenCalled

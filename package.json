@@ -4,6 +4,7 @@
   "version": "0.8.2",
   "description": "Runs CoffeeScript or JavaScript in Atom",
   "repository": "https://github.com/robenkleene/run-in-atom",
+  "activationEvents": ["run-in-atom:run-in-atom"],
   "license": "MIT",
   "engines": {
     "atom": ">0.39.0"
