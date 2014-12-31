@@ -1,5 +1,9 @@
 'context-menu':
-  '.overlayer .source.coffee':
-    'Run in Atom': 'run-in-atom:run-in-atom'
-  '.overlayer .source.js':
-    'Run in Atom': 'run-in-atom:run-in-atom'
+  '.overlayer .source.coffee': [
+    'label': 'Run in Atom'
+    'command': 'run-in-atom:run-in-atom'
+  ]
+  '.overlayer .source.js': [
+    'label': 'Run in Atom'
+    'command': 'run-in-atom:run-in-atom'
+  ]
