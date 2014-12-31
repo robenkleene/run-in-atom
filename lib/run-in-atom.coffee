@@ -1,9 +1,12 @@
 coffee = require 'coffee-script'
 vm = require 'vm'
 
+  
 module.exports =
-  configDefaults:
-    openDeveloperToolsOnRun: true
+  config:
+    openDeveloperToolsOnRun:
+      type: 'boolean'
+      default: true
 
   activate: ->
     @disposable = atom.commands.add 'atom-text-editor', 'run-in-atom:run-in-atom', =>
