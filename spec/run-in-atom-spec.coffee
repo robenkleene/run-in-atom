@@ -4,7 +4,7 @@ describe "Run in Atom", ->
   workspaceElement = null
   editorElement = null
   editor = null
-  markdownCursorPositionNoCode = [0, 0]
+  markdownCursorPositionNoCode = [4, 0]
   markdownCursorPositionCoffeeScript = [1, 0]
   markdownCursorPositionJavaScript = [6, 0]
 
@@ -110,6 +110,29 @@ describe "Run in Atom", ->
       spyOn(console, "error")
       spyOn(console, "log")
       spyOn(console, "warn")
+      
+    describe "With no active editor", ->
+
+      it "logs a warning", ->
+
+        waitsForPromise ->
+          atom.workspace.open("empty.coffee")
+
+        runs ->
+          editor = atom.workspace.getActiveTextEditor()
+          editorElement = atom.views.getView(editor)
+          atom.workspace.getActivePaneItem().destroy()
+
+        runs ->
+          editor = atom.workspace.getActiveTextEditor()
+          expect(editor).not.toExist()
+          atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
+
+        waitsForPromise ->
+          activationPromise
+
+        runs ->
+          expect(console.warn).toHaveBeenCalled()
 
     describe "CoffeeScript file", ->
 
@@ -135,8 +158,7 @@ describe "Run in Atom", ->
             activationPromise
 
           runs ->
-            expect(atom.openDevTools).toHaveBeenCalled
-
+            expect(atom.openDevTools).toHaveBeenCalled()
         it "doesn't open the developer tools if false", ->
           atom.config.set('run-in-atom.openDeveloperToolsOnRun', false)
           editor.setText(coffeeScriptCode)
@@ -146,8 +168,7 @@ describe "Run in Atom", ->
             activationPromise
 
           runs ->
-            expect(atom.openDevTools).not.toHaveBeenCalled
-
+            expect(atom.openDevTools).not.toHaveBeenCalled()
       it "logs an error if CoffeeScript is invalid", ->
         editor.setText(javaScriptCode)
         atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
@@ -156,9 +177,9 @@ describe "Run in Atom", ->
           activationPromise
 
         runs ->
-          expect(console.log).not.toHaveBeenCalled
-          expect(console.error).toHaveBeenCalled
-          expect(console.warn).not.toHaveBeenCalled
+          expect(console.log).not.toHaveBeenCalled()
+          expect(console.error).toHaveBeenCalled()
+          expect(console.warn).not.toHaveBeenCalled()
 
       it "runs CoffeeScript and logs the result", ->
         editor.setText(coffeeScriptCode)
@@ -169,8 +190,8 @@ describe "Run in Atom", ->
 
         runs ->
           expect(console.log).toHaveBeenCalledWith(prefix, result)
-          expect(console.error).not.toHaveBeenCalled
-          expect(console.warn).not.toHaveBeenCalled
+          expect(console.error).not.toHaveBeenCalled()
+          expect(console.warn).not.toHaveBeenCalled()
 
     describe "JavaScript file", ->
 
@@ -191,10 +212,9 @@ describe "Run in Atom", ->
             activationPromise
 
           runs ->
-            expect(console.log).not.toHaveBeenCalled
-            expect(console.error).toHaveBeenCalled
-            expect(console.warn).not.toHaveBeenCalled
-
+            expect(console.log).not.toHaveBeenCalled()
+            expect(console.error).toHaveBeenCalled()
+            expect(console.warn).not.toHaveBeenCalled()
         it "runs JavaScript and logs the result", ->
           editor.setText(javaScriptCode)
           atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
@@ -204,8 +224,8 @@ describe "Run in Atom", ->
 
           runs ->
             expect(console.log).toHaveBeenCalledWith(prefix, result)
-            expect(console.error).not.toHaveBeenCalled
-            expect(console.warn).not.toHaveBeenCalled
+            expect(console.error).not.toHaveBeenCalled()
+            expect(console.warn).not.toHaveBeenCalled()
 
     describe "Markdown file", ->
       beforeEach ->
@@ -228,9 +248,9 @@ describe "Run in Atom", ->
           activationPromise
 
         runs ->
-          expect(console.log).not.toHaveBeenCalled
-          expect(console.error).not.toHaveBeenCalled
-          expect(console.warn).toHaveBeenCalled
+          expect(console.log).not.toHaveBeenCalled()
+          expect(console.error).not.toHaveBeenCalled()
+          expect(console.warn).toHaveBeenCalled()
 
       it "Logs a warning if Markdown is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionNoCode)
@@ -241,9 +261,9 @@ describe "Run in Atom", ->
           activationPromise
 
         runs ->
-          expect(console.log).not.toHaveBeenCalled
-          expect(console.error).not.toHaveBeenCalled
-          expect(console.warn).toHaveBeenCalled
+          expect(console.log).not.toHaveBeenCalled()
+          expect(console.error).not.toHaveBeenCalled()
+          expect(console.warn).toHaveBeenCalled()
 
       it "Runs if CoffeeScript is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionCoffeeScript)
@@ -255,8 +275,8 @@ describe "Run in Atom", ->
 
         runs ->
           expect(console.log).toHaveBeenCalledWith(prefix, result)
-          expect(console.error).not.toHaveBeenCalled
-          expect(console.warn).not.toHaveBeenCalled
+          expect(console.error).not.toHaveBeenCalled()
+          expect(console.warn).not.toHaveBeenCalled()
 
       it "Runs if JavaScript is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionJavaScript)
@@ -268,5 +288,5 @@ describe "Run in Atom", ->
 
         runs ->
           expect(console.log).toHaveBeenCalledWith(prefix, result)
-          expect(console.error).not.toHaveBeenCalled
-          expect(console.warn).not.toHaveBeenCalled
+          expect(console.error).not.toHaveBeenCalled()
+          expect(console.warn).not.toHaveBeenCalled()

@@ -12,7 +12,10 @@ module.exports =
     @disposable = atom.commands.add 'atom-text-editor', 'run-in-atom:run-in-atom', =>
       if atom.config.get 'run-in-atom.openDeveloperToolsOnRun'
         atom.openDevTools()
-      editor = atom.workspace.getActivePaneItem()
+      editor = atom.workspace.getActiveTextEditor()
+      if !editor
+        console.warn "No active text editor"
+        return
       code = editor.getSelectedText()
       if code
         scope = @matchingCursorScopeInEditor(editor)
