@@ -56,8 +56,6 @@ module.exports =
 
     for scope in scopes
       return scope if scope in editor.getLastCursor().getScopeDescriptor().scopes
-      # TODO Delete after testing
-      # return scope if scope in editor.scopesAtCursor()
 
   getScopes: ->
     ['source.coffee', 'source.js']
