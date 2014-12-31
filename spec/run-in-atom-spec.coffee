@@ -145,7 +145,30 @@ describe "Run in Atom", ->
           editor = atom.workspace.getActiveTextEditor()
           editorElement = atom.views.getView(editor)
 
+      describe "deactivate()", ->
+
+        it "removes the command", ->
+
+          editor.setText(coffeeScriptCode)
+          atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
+
+          waitsForPromise ->
+            activationPromise
+
+          runs ->
+            expect(console.log).toHaveBeenCalledWith(prefix, result)
+            expect(console.error).not.toHaveBeenCalled()
+            expect(console.warn).not.toHaveBeenCalled()
+            atom.packages.deactivatePackage('run-in-atom')
+            atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
+            # Confirm that nothing is logged for the second run
+            expect(console.log.callCount).toBe 1
+            expect(console.error).not.toHaveBeenCalled()
+            expect(console.warn).not.toHaveBeenCalled()
+
+
       describe "openDeveloperToolsOnRun config option", ->
+
         beforeEach ->
           spyOn(atom, "openDevTools")
 
@@ -159,6 +182,7 @@ describe "Run in Atom", ->
 
           runs ->
             expect(atom.openDevTools).toHaveBeenCalled()
+
         it "doesn't open the developer tools if false", ->
           atom.config.set('run-in-atom.openDeveloperToolsOnRun', false)
           editor.setText(coffeeScriptCode)
@@ -169,6 +193,7 @@ describe "Run in Atom", ->
 
           runs ->
             expect(atom.openDevTools).not.toHaveBeenCalled()
+
       it "logs an error if CoffeeScript is invalid", ->
         editor.setText(javaScriptCode)
         atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
@@ -182,6 +207,7 @@ describe "Run in Atom", ->
           expect(console.warn).not.toHaveBeenCalled()
 
       it "runs CoffeeScript and logs the result", ->
+
         editor.setText(coffeeScriptCode)
         atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
