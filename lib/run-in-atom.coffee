@@ -47,8 +47,11 @@ module.exports =
 
   matchingCursorScopeInEditor: (editor) ->
     scopes = @getScopes()
+
     for scope in scopes
-      return scope if scope in editor.scopesAtCursor()
+      return scope if scope in editor.getLastCursor().getScopeDescriptor().scopes
+      # TODO Delete after testing
+      # return scope if scope in editor.scopesAtCursor()
 
   getScopes: ->
     ['source.coffee', 'source.js']
