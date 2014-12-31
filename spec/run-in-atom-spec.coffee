@@ -1,15 +1,16 @@
-{WorkspaceView} = require 'atom'
 RunInAtom = require '../lib/run-in-atom'
 
 describe "Run in Atom", ->
+  workspaceElement = null
+  editorElement = null
   editor = null
   markdownCursorPositionNoCode = [0, 0]
   markdownCursorPositionCoffeeScript = [1, 0]
   markdownCursorPositionJavaScript = [6, 0]
 
   beforeEach ->
-    atom.workspaceView = new WorkspaceView
-    atom.workspaceView.attachToDom()
+    workspaceElement = atom.views.getView(atom.workspace)
+    jasmine.attachToDOM(workspaceElement)
     atom.config.set('run-in-atom.openDeveloperToolsOnRun', false)
 
     waitsForPromise ->
@@ -28,7 +29,7 @@ describe "Run in Atom", ->
           atom.workspace.open("empty.coffee")
 
         runs ->
-          editor = atom.workspace.getActivePaneItem()
+          editor = atom.workspace.getActiveTextEditor()
 
       it "scopeInEditor returns 'source.coffee'", ->
         expect(RunInAtom.scopeInEditor(editor)).toBe 'source.coffee'
@@ -44,7 +45,7 @@ describe "Run in Atom", ->
           atom.workspace.open("empty.js")
 
         runs ->
-          editor = atom.workspace.getActivePaneItem()
+          editor = atom.workspace.getActiveTextEditor()
 
       it "scopeInEditor returns 'source.js'", ->
         expect(RunInAtom.scopeInEditor(editor)).toBe 'source.js'
@@ -62,7 +63,7 @@ describe "Run in Atom", ->
           atom.workspace.open("code.md")
 
         runs ->
-          editor = atom.workspace.getActivePaneItem()
+          editor = atom.workspace.getActiveTextEditor()
 
       describe "when the cursor is not in a code block", ->
 
@@ -118,7 +119,8 @@ describe "Run in Atom", ->
           atom.workspace.open("empty.coffee")
 
         runs ->
-          editor = atom.workspace.getActivePaneItem()
+          editor = atom.workspace.getActiveTextEditor()
+          editorElement = atom.views.getView(editor)
 
       describe "openDeveloperToolsOnRun config option", ->
         beforeEach ->
@@ -127,7 +129,7 @@ describe "Run in Atom", ->
         it "opens the developer tools if true", ->
           atom.config.set('run-in-atom.openDeveloperToolsOnRun', true)
           editor.setText(coffeeScriptCode)
-          atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+          atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
           waitsForPromise ->
             activationPromise
@@ -138,7 +140,7 @@ describe "Run in Atom", ->
         it "doesn't open the developer tools if false", ->
           atom.config.set('run-in-atom.openDeveloperToolsOnRun', false)
           editor.setText(coffeeScriptCode)
-          atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+          atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
           waitsForPromise ->
             activationPromise
@@ -148,7 +150,8 @@ describe "Run in Atom", ->
 
       it "logs an error if CoffeeScript is invalid", ->
         editor.setText(javaScriptCode)
-        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
+
         waitsForPromise ->
           activationPromise
 
@@ -159,7 +162,7 @@ describe "Run in Atom", ->
 
       it "runs CoffeeScript and logs the result", ->
         editor.setText(coffeeScriptCode)
-        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
         waitsForPromise ->
           activationPromise
@@ -177,11 +180,12 @@ describe "Run in Atom", ->
           atom.workspace.open("empty.coffee")
 
         runs ->
-          editor = atom.workspace.getActivePaneItem()
+          editor = atom.workspace.getActiveTextEditor()
+          editorElement = atom.views.getView(editor)
 
         it "logs an error if JavaScript is invalid", ->
           editor.setText(coffeeScriptCode)
-          atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+          atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
           waitsForPromise ->
             activationPromise
@@ -193,7 +197,7 @@ describe "Run in Atom", ->
 
         it "runs JavaScript and logs the result", ->
           editor.setText(javaScriptCode)
-          atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+          atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
           waitsForPromise ->
             activationPromise
@@ -213,11 +217,12 @@ describe "Run in Atom", ->
           atom.workspace.open("code.md")
 
         runs ->
-          editor = atom.workspace.getActivePaneItem()
+          editor = atom.workspace.getActiveTextEditor()
+          editorElement = atom.views.getView(editor)
 
       it "Logs a warning if nothing is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionNoCode)
-        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
         waitsForPromise ->
           activationPromise
@@ -230,7 +235,7 @@ describe "Run in Atom", ->
       it "Logs a warning if Markdown is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionNoCode)
         editor.selectLine()
-        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
         waitsForPromise ->
           activationPromise
@@ -243,7 +248,7 @@ describe "Run in Atom", ->
       it "Runs if CoffeeScript is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionCoffeeScript)
         editor.selectLine()
-        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
         waitsForPromise ->
           activationPromise
@@ -256,7 +261,7 @@ describe "Run in Atom", ->
       it "Runs if JavaScript is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionJavaScript)
         editor.selectLine()
-        atom.workspaceView.trigger 'run-in-atom:run-in-atom'
+        atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
         waitsForPromise ->
           activationPromise

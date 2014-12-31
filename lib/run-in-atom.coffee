@@ -6,7 +6,7 @@ module.exports =
     openDeveloperToolsOnRun: true
 
   activate: ->
-    atom.workspaceView.command 'run-in-atom:run-in-atom', =>
+    @disposable = atom.commands.add 'atom-text-editor', 'run-in-atom:run-in-atom', =>
       if atom.config.get 'run-in-atom.openDeveloperToolsOnRun'
         atom.openDevTools()
       editor = atom.workspace.getActivePaneItem()
@@ -23,6 +23,9 @@ module.exports =
           console.warn "Run in Atom Warning:", warning
         else
           console.log "Run in Atom:", result
+
+  deactivate: ->
+    @disposable?.dispose()
 
   runCodeInScope: (code, scope, callback) ->
     switch scope
@@ -45,7 +48,7 @@ module.exports =
   matchingCursorScopeInEditor: (editor) ->
     scopes = @getScopes()
     for scope in scopes
-      return scope if scope in editor.getCursorScopes()
+      return scope if scope in editor.scopesAtCursor()
 
   getScopes: ->
     ['source.coffee', 'source.js']
