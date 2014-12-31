@@ -14,7 +14,7 @@ module.exports =
         atom.openDevTools()
       editor = atom.workspace.getActiveTextEditor()
       if !editor
-        console.warn "No active text editor"
+        console.warn "Run in Atom Warning: No text editor is active."
         return
       code = editor.getSelectedText()
       if code
