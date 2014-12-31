@@ -234,7 +234,7 @@ describe "Run in Atom", ->
 
       it "Logs a warning if Markdown is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionNoCode)
-        editor.selectLine()
+        editor.selectLinesContainingCursors()
         atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
         waitsForPromise ->
@@ -247,7 +247,7 @@ describe "Run in Atom", ->
 
       it "Runs if CoffeeScript is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionCoffeeScript)
-        editor.selectLine()
+        editor.selectLinesContainingCursors()
         atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
         waitsForPromise ->
@@ -260,7 +260,7 @@ describe "Run in Atom", ->
 
       it "Runs if JavaScript is selected", ->
         editor.setCursorScreenPosition(markdownCursorPositionJavaScript)
-        editor.selectLine()
+        editor.selectLinesContainingCursors()
         atom.commands.dispatch editorElement, 'run-in-atom:run-in-atom'
 
         waitsForPromise ->
