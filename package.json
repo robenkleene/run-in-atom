@@ -1,11 +1,13 @@
 {
   "name": "run-in-atom",
   "main": "./lib/run-in-atom",
-  "version": "0.8.3",
+  "version": "1.0.0",
   "description": "Runs CoffeeScript or JavaScript in Atom",
   "repository": "https://github.com/robenkleene/run-in-atom",
   "activationCommands": {
-    "atom-text-editor": ["run-in-atom:run-in-atom"]
+    "atom-text-editor": [
+      "run-in-atom:run-in-atom"
+    ]
   },
   "license": "MIT",
   "engines": {
