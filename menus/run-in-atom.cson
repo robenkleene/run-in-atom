@@ -1,9 +1,19 @@
 'context-menu':
-  '.overlayer .source.coffee': [
+  'atom-text-editor, .overlayer': [
     'label': 'Run in Atom'
     'command': 'run-in-atom:run-in-atom'
   ]
-  '.overlayer .source.js': [
-    'label': 'Run in Atom'
-    'command': 'run-in-atom:run-in-atom'
-  ]
+
+# As of Atom Version 0.169.0, scope selectors for context menus don't work
+# The context menu has temporarily been enabled for all scopes
+# A fix for enabling context menus in scopes is in the works:
+# https://github.com/atom/atom/issues/4961
+# 'context-menu':
+#   '.overlayer .source.coffee': [
+#     'label': 'Run in Atom'
+#     'command': 'run-in-atom:run-in-atom'
+#   ]
+#   '.overlayer': [
+#     'label': 'Run in Atom'
+#     'command': 'run-in-atom:run-in-atom'
+#   ]
