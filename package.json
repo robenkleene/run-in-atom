@@ -2,7 +2,7 @@
   "name": "run-in-atom",
   "main": "./lib/run-in-atom",
   "version": "1.0.2",
-  "description": "Runs CoffeeScript or JavaScript in Atom",
+  "description": "Runs code in Atom",
   "repository": "https://github.com/robenkleene/run-in-atom",
   "activationCommands": {
     "atom-text-editor": [
@@ -15,5 +15,13 @@
   },
   "dependencies": {
     "coffee-script": "1.7.x"
+  },
+  "providedServices": {
+    "run-in-atom": {
+      "description": "A code run in Atom",
+      "versions": {
+        "2.0.0": "dispatchRun"
+      }
+    }
   }
 }
