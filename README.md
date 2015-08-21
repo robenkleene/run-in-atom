@@ -52,7 +52,7 @@ First declare that your language supports code runs in your `package.json`:
   "consumedServices": {
     "run-in-atom": {
       "versions": {
-        "^1.0.3": "supportRun"
+        "^2.0.0": "supportRun"
       }
     }
   }
