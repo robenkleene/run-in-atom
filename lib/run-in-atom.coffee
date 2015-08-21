@@ -8,6 +8,10 @@ module.exports =
       type: 'boolean'
       default: true
 
+  dispatcher:
+    'source.js': (code) -> vm.runInThisContext(code)
+    'source.coffee': (code) -> vm.runInThisContext(coffee.compile(code, bare: true))
+
   activate: ->
     @disposable = atom.commands.add 'atom-text-editor', 'run-in-atom:run-in-atom', =>
       if atom.config.get 'run-in-atom.openDeveloperToolsOnRun'
@@ -34,22 +38,15 @@ module.exports =
     @disposable?.dispose()
 
   runCodeInScope: (code, scope, callback) ->
-    switch scope
-      when 'source.coffee'
-        try
-          result = vm.runInThisContext(coffee.compile(code, bare: true))
-          callback(null, null, result)
-        catch error
-          callback(error)
-      when 'source.js'
-        try
-          result = vm.runInThisContext(code)
-          callback(null, null, result)
-        catch error
-          callback(error)
-      else
-        warning = "Attempted to run in scope '#{scope}', which isn't supported."
-        callback(null, warning)
+    if @dispatcher[scope]?
+      try
+        result = @dispatcher[scope].call(this, code)
+        callback(null, null, result)
+      catch error
+        callback(error)
+    else
+      warning = "Attempted to run in scope '#{scope}', which isn't supported."
+      callback(null, warning)
 
   matchingCursorScopeInEditor: (editor) ->
     scopes = @getScopes()
@@ -62,3 +59,7 @@ module.exports =
 
   scopeInEditor: (editor) ->
     editor.getGrammar()?.scopeName
+
+  dispatchRun: ->
+    add: (scope, func) => @dispatcher[scope] = func
+    remove: (scope) => delete @dispatcher[scope]

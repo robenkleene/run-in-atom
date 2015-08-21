@@ -36,3 +36,35 @@ This package is based on code from [probablycorey](https://atom.io/users/probabl
 * There's a configuration option to automatically open the developer tools when code is run.
 * Code can by run from the contextual menu.
 * In [GitHub Flavored Markdown](https://github.com/atom/language-gfm), code can be run in fenced code blocks.
+
+
+## Using as a Service
+
+Languages beyond CoffeeScript and JavaScript can plug into Run in Atom. To this end the
+respective language packages have to implement a code runner.
+
+First declare that your language supports code runs in your `package.json`:
+
+``` json
+{
+  "name": "your-language-package",
+  ...
+  "consumedServices": {
+    "run-in-atom": {
+      "versions": {
+        "^2.0.0": "supportRun"
+      }
+    }
+  }
+}
+```
+
+Then implement the consumer method and the code runner for your language:
+
+``` coffeescript
+supportRun: (service) ->
+  service.add('source.your-language', (code) => @yourLanguageRunner code)
+  @disposables.add(new Disposable -> service.remove('source.your-language'))
+```
+
+The `add` and `remove` methods expect your language grammar scope as parameter.
