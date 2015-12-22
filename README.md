@@ -25,7 +25,7 @@ atom.project.open().then (editor) ->
 
 Code can be run in the following ways. In all cases it runs the selection if it exists, otherwise the whole document. The code's result is logged to the console.
 
-* `cmd-k r` keyboard shortcut
+* `alt-cmd-r` keyboard shortcut
 * Choosing "Run In Atom" from the [command palette](https://github.com/atom/command-palette)
 * Choosing "Run in Atom" from the contextual menu
 
