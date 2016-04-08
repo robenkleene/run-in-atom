@@ -35,13 +35,13 @@ module.exports =
 
   runCodeInScope: (code, scope, callback) ->
     switch scope
-      when 'source.coffee'
+      when 'source.coffee', 'source.embedded.coffee'
         try
           result = vm.runInThisContext(coffee.compile(code, bare: true))
           callback(null, null, result)
         catch error
           callback(error)
-      when 'source.js'
+      when 'source.js', 'source.embedded.js'
         try
           result = vm.runInThisContext(code)
           callback(null, null, result)
