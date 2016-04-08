@@ -58,7 +58,7 @@ module.exports =
       return scope if scope in editor.getLastCursor().getScopeDescriptor().scopes
 
   getScopes: ->
-    ['source.coffee', 'source.js']
+    ['source.coffee', 'source.js', 'source.embedded.coffee', 'source.embedded.js']
 
   scopeInEditor: (editor) ->
     editor.getGrammar()?.scopeName

@@ -84,8 +84,8 @@ describe "Run in Atom", ->
         it "scopeInEditor returns 'source.gfm'", ->
           expect(RunInAtom.scopeInEditor(editor)).toBe 'source.gfm'
 
-        it "matchingCursorScopeInEditor returns 'source.coffee'", ->
-          expect(RunInAtom.matchingCursorScopeInEditor(editor)).toBe 'source.coffee'
+        it "matchingCursorScopeInEditor returns 'source.embedded.coffee'", ->
+          expect(RunInAtom.matchingCursorScopeInEditor(editor)).toBe 'source.embedded.coffee'
 
       describe "when the cursor is in a JavaScript code block", ->
         beforeEach ->
@@ -94,8 +94,8 @@ describe "Run in Atom", ->
         it "scopeInEditor returns 'source.gfm'", ->
           expect(RunInAtom.scopeInEditor(editor)).toBe 'source.gfm'
 
-        it "matchingCursorScopeInEditor returns 'source.js'", ->
-          expect(RunInAtom.matchingCursorScopeInEditor(editor)).toBe 'source.js'
+        it "matchingCursorScopeInEditor returns 'source.embedded.js'", ->
+          expect(RunInAtom.matchingCursorScopeInEditor(editor)).toBe 'source.embedded.js'
 
   describe "running code", ->
     activationPromise = null
