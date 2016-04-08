@@ -5,7 +5,7 @@ Run in Atom is an Atom package that allows code to be executed in the context of
 For example, running the following CoffeeScript with Run in Atom will log the contents of the current document to the console.
 
 ``` coffeescript
-editor = atom.workspace.activePaneItem
+editor = atom.workspace.getActiveTextEditor()
 editor.getText()
 ```
 
@@ -14,9 +14,9 @@ editor.getText()
 Example of calling asynchronous CoffeeScript with "Run In Atom" that triggers a visible UI change:
 
 ``` coffeescript
-activePane = atom.workspaceView.getActivePaneView()
-atom.project.open().then (editor) ->
-  activePane.splitDown(editor)
+pane = atom.workspace.getActivePane()
+editor = atom.workspace.getActiveTextEditor()
+pane.splitDown(items: [atom.workspace.buildTextEditor()])
 ```
 
 ![Command Palette](https://raw.githubusercontent.com/robenkleene/run-in-atom/master/docs/command-palette.gif)
