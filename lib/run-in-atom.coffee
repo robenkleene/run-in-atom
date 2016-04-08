@@ -1,7 +1,7 @@
 coffee = require 'coffee-script'
 vm = require 'vm'
 
-  
+
 module.exports =
   config:
     openDeveloperToolsOnRun:

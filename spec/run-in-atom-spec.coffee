@@ -110,7 +110,7 @@ describe "Run in Atom", ->
       spyOn(console, "error")
       spyOn(console, "log")
       spyOn(console, "warn")
-      
+
     describe "With no active editor", ->
 
       it "logs a warning", ->
