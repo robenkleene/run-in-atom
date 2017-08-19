@@ -1,6 +1,6 @@
 coffee = require 'coffee-script'
 livescript = require 'LiveScript'
-typescring = require 'typestring'
+typestring = require 'typestring'
 vm = require 'vm'
 
 
