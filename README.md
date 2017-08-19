@@ -31,7 +31,7 @@ Code can be run in the following ways. In all cases it runs the selection if it 
 
 This package is based on code from [probablycorey](https://atom.io/users/probablycorey)'s [coffee-eval](https://atom.io/packages/coffee-eval), with the following differentiating features:
 
-* Both CoffeeScript and JavaScript are supported.
+* CoffeeScript, JavaScript and LiveScript are supported.
 * Coffee Eval's output window has been removed.
 * There's a configuration option to automatically open the developer tools when code is run.
 * Code can by run from the contextual menu.

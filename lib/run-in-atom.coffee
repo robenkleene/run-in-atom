@@ -1,4 +1,5 @@
 coffee = require 'coffee-script'
+livescript = require 'LiveScript'
 vm = require 'vm'
 
 
@@ -52,6 +53,13 @@ module.exports =
           callback(null, null, result)
         catch error
           callback(error)
+      when 'source.livescript'
+        vm.runInThisContext(console.clear()) if atom.config.get 'run-in-atom.alwaysClearConsole'
+        try
+          result = vm.runInThisContext(livescript.compile(code, bare: true))
+          callback(null, null, result)
+        catch error
+          callback(error)
       else
         warning = "Attempted to run in scope '#{scope}', which isn't supported."
         callback(null, warning)
@@ -63,7 +71,7 @@ module.exports =
       return scope if scope in editor.getLastCursor().getScopeDescriptor().scopes
 
   getScopes: ->
-    ['source.coffee', 'source.js', 'source.embedded.coffee', 'source.embedded.js']
+    ['source.coffee', 'source.js', 'source.embedded.coffee', 'source.embedded.js', 'source.livescript']
 
   scopeInEditor: (editor) ->
     editor.getGrammar()?.scopeName
