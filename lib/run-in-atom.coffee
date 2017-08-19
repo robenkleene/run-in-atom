@@ -55,14 +55,14 @@ module.exports =
         catch error
           callback(error)
       when 'source.livescript'
-        vm.runInThisContext(console.clear()) if atom.config.get 'run-in-atom.alwaysClearConsole'
+        vm.runInThisContext(console.clear()) if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
         try
           result = vm.runInThisContext(livescript.compile(code, bare: true))
           callback(null, null, result)
         catch error
           callback(error)
       when 'source.ts'
-        vm.runInThisContext(console.clear()) if atom.config.get 'run-in-atom.alwaysClearConsole'
+        vm.runInThisContext(console.clear()) if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
         try
           result = vm.runInThisContext(typestring.compile(code))
           callback(null, null, result)
