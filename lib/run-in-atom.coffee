@@ -1,4 +1,6 @@
 coffee = require 'coffee-script'
+livescript = require 'LiveScript'
+typestring = require 'typestring'
 vm = require 'vm'
 
 
@@ -7,6 +9,9 @@ module.exports =
     openDeveloperToolsOnRun:
       type: 'boolean'
       default: true
+    clearConsoleBeforeRun:
+      type: 'boolean'
+      default: false
 
   activate: ->
     @disposable = atom.commands.add 'atom-text-editor', 'run-in-atom:run-in-atom', =>
@@ -36,14 +41,30 @@ module.exports =
   runCodeInScope: (code, scope, callback) ->
     switch scope
       when 'source.coffee', 'source.embedded.coffee'
+        code = "console.clear();#{code}" if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
         try
           result = vm.runInThisContext(coffee.compile(code, bare: true))
           callback(null, null, result)
         catch error
           callback(error)
       when 'source.js', 'source.embedded.js'
+        code = "console.clear();#{code}" if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
         try
           result = vm.runInThisContext(code)
+          callback(null, null, result)
+        catch error
+          callback(error)
+      when 'source.livescript'
+        code = "console.clear();#{code}" if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
+        try
+          result = vm.runInThisContext(livescript.compile(code, bare: true))
+          callback(null, null, result)
+        catch error
+          callback(error)
+      when 'source.ts'
+        code = "console.clear();#{code}" if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
+        try
+          result = vm.runInThisContext(typestring.compile(code))
           callback(null, null, result)
         catch error
           callback(error)
@@ -58,7 +79,7 @@ module.exports =
       return scope if scope in editor.getLastCursor().getScopeDescriptor().scopes
 
   getScopes: ->
-    ['source.coffee', 'source.js', 'source.embedded.coffee', 'source.embedded.js']
+    ['source.coffee', 'source.js', 'source.embedded.coffee', 'source.embedded.js', 'source.livescript', 'source.ts']
 
   scopeInEditor: (editor) ->
     editor.getGrammar()?.scopeName
