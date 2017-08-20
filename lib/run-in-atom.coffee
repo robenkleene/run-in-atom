@@ -41,28 +41,28 @@ module.exports =
   runCodeInScope: (code, scope, callback) ->
     switch scope
       when 'source.coffee', 'source.embedded.coffee'
-        vm.runInThisContext(console.clear()) if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
+        code = "console.clear();#{code}" if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
         try
           result = vm.runInThisContext(coffee.compile(code, bare: true))
           callback(null, null, result)
         catch error
           callback(error)
       when 'source.js', 'source.embedded.js'
-        vm.runInThisContext(console.clear()) if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
+        code = "console.clear();#{code}" if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
         try
           result = vm.runInThisContext(code)
           callback(null, null, result)
         catch error
           callback(error)
       when 'source.livescript'
-        vm.runInThisContext(console.clear()) if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
+        code = "console.clear();#{code}" if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
         try
           result = vm.runInThisContext(livescript.compile(code, bare: true))
           callback(null, null, result)
         catch error
           callback(error)
       when 'source.ts'
-        vm.runInThisContext(console.clear()) if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
+        code = "console.clear();#{code}" if atom.config.get 'run-in-atom.clearConsoleBeforeRun'
         try
           result = vm.runInThisContext(typestring.compile(code))
           callback(null, null, result)
